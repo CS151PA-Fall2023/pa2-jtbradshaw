@@ -1,11 +1,14 @@
 #include "functions.h"
 
 int main(){
-    vector<Grade> gradeVect;
+    vector<Student> gradeVect;
     loadVector(gradeVect);
+    bool run = true;
+    while(run){
+        run = menu(gradeVect);
+    }
 
-    cout<<"Last name of first student for vector "<<gradeVect[0].last<<endl;
-    cout<<"Last name of second student for vector "<<gradeVect[1].last<<endl;
+    //print(gradeVect,0);
 
 
     return 0;

@@ -19,8 +19,8 @@ struct Student{
 };
 
 void loadVector(vector<Student> &vector);
-void menu(vector<Student> &vector);
-bool validMenuImput(int num);
+bool menu(vector<Student> &vector);
+bool validMenuInput(int num);
 
 void print(const vector<Student> &vector, int num);
 void ascLastName(vector<Student> &vector);
