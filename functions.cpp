@@ -215,7 +215,8 @@ bool menu(Student *lastN[], Student *firstN[], Student *ssn[]){
             "3. Search by last name\n"<<
             "4. Search by SSN\n"<<
             "5. Print data in ascending order by first name\n"<<
-            "6. Exit\n\nSelect a Menu: ";
+            "6. Search by first name\n"<<
+            "7. Exit\n\nSelect a Menu: ";
 
         cin>>menuNum;
         if(!validMenuInput(menuNum)){
@@ -243,10 +244,13 @@ bool menu(Student *lastN[], Student *firstN[], Student *ssn[]){
         return true;
         break;
     case 5:
-        ascLastName(firstN);
+        ascFirstName(firstN);
         return true;
         break;
     case 6:
+        searchFN(firstN);
+        break;
+    case 7:
         return false;
         break;
     
@@ -265,7 +269,7 @@ bool menu(Student *lastN[], Student *firstN[], Student *ssn[]){
  * @return false num is not within range
  */
 bool validMenuInput(int num){
-    if(num >= 1 && num <= 6){
+    if(num >= 1 && num <= 7){
         return true;
     } else {
         return false;
@@ -314,8 +318,9 @@ void searchLN(Student *ptr[]){
     bool found = false; // Flag
     while(!found){
         string lastName;
-        cout<<"Please enter the SSN of the person you are looking for: ";
-        cin>>lastName;
+        cout<<"Please enter the Last Name of the person you are looking for: ";
+        getline(cin, lastName);
+        cin.ignore();
 
         int first = 0, // First array element
         last = SIZE - 1, // Last array element
@@ -353,7 +358,7 @@ void searchSSN(Student *ptr[]){
     bool found = false; // Flag
     while(!found){
         string ssn;
-        cout<<"Please enter the SSN of the person you are looking for: ";
+        cout<<"Please enter the SSN of the person you are looking for (ie. ###-##-####): ";
         cin>>ssn;
 
         int first = 0, // First array element
@@ -379,3 +384,46 @@ void searchSSN(Student *ptr[]){
     }
     print(ptr, position);
 }
+
+/**
+ * @brief Calls function to sort pointer. Then searches list of students for one matching the 
+ * first name input by user and  calls function that prints that students information.
+ * 
+ * @param ptr Pointer that is full of Student struct data
+ */
+void searchFN(Student *ptr[]){
+    sortFN(ptr);
+    int position = -1; // Position of search value
+    bool found = false; // Flag
+    while(!found){
+        string firstName;
+        cout<<"Please enter the First Name of the person you are looking for: ";
+        getline(cin, firstName);
+        cin.ignore();
+
+        int first = 0, // First array element
+        last = SIZE - 1, // Last array element
+        middle; // Midpoint of search
+        position = -1;
+        Student temp;
+        while (!found && first <= last){
+            middle = (first + last) / 2; // Calculate midpoint
+            temp = *ptr[middle];
+            if (temp.first == firstName){ // If value is found at mid
+                found = true;
+                position = middle;
+            }else if (temp.first > firstName){ // If value is in lower half
+                last = middle - 1;
+            }else{
+                first = middle + 1; // If value is in upper half
+            }
+        }
+        if(!found){
+            cout<<"Name not found."<<endl;
+        }
+    }
+    print(ptr, position);
+}
+
+
+

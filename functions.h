@@ -49,6 +49,7 @@ void ascSSN(Student *ptr[]);
 void ascFirstName(Student *ptr[]);
 void searchLN(Student *ptr[]);
 void searchSSN(Student *ptr[]);
+void searchFN(Student *ptr[]);
 
 
 
