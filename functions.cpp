@@ -87,13 +87,9 @@ void loadArray(Student array[SIZE]){
  * @param ptr pointer that is full of addresses of array
  */
 void loadPtr(Student array[], Student **ptr){
-    //**ptr = new Student *[SIZE];
-
     for(int i = 0; i < SIZE; i++){
         ptr[i] = &array[i];
-
     }
-    
 }
 
 /**
@@ -101,11 +97,26 @@ void loadPtr(Student array[], Student **ptr){
  * 
  * @param ptr pointer that is full of addresses of array
  */
-void sortLN(Student *ptr[]){
-
+void sortLN(Student *ptr[], int num){
     bool madeAswap = true;
     int lastIndex = SIZE-1;
-    Student temp, temp1;
+    Student temp, temp1, hold[SIZE];
+    int holdCount = 0; //to count the number of holds that are needed for last names
+    //Checks if it should change the lowercase last name to uppercase based on if it needs to do a binary search or not
+    if(num == 1){
+        /*To take last names that start with lowercase and change the first letter of the last name to an uppercase
+        this allows it to be sorted properly.*/
+        for(int i = 0; i < SIZE; i++){
+            temp = *ptr[i];
+            if(islower(temp.last[0])){
+                temp.last[0] = toupper(temp.last[0]);
+                *ptr[i] = temp;
+                hold[holdCount] = temp;
+                holdCount++;
+            }
+        }    
+    }
+
     while(madeAswap){
         
         madeAswap = false;
@@ -122,6 +133,19 @@ void sortLN(Student *ptr[]){
             }
             --lastIndex;
     }
+    //To turn any last names that became uppercase back into lowercase
+    if(num == 1){
+        for(int i = 0; i < SIZE; i++){
+            temp = *ptr[i];
+            for(int count = 0; count < (int)size(hold); count++){
+                if(temp.last == hold[count].last){
+                temp.last[0] = tolower(temp.last[0]);
+                *ptr[i] = temp;
+                }
+            }
+        }    
+    }
+
 }
 
 /**
@@ -195,11 +219,9 @@ void print(Student *ptr[], int num){
         cout<<left<<setw(3)<<"ID"<<setw(11)<<"Last Name"<<setw(12)<<"First Name"<<setw(12)<<"SSN"<<"Grade"<<endl; 
         for(int i = 0; i < SIZE; i++){
             Student temp = *ptr[i];
-
             cout<<right<<setw(2)<<temp.id<<" "<<left<<setw(11)<<temp.last<<setw(12)<<temp.first<<setw(12)<<temp.ssn<<temp.grade<<endl;
         }
         cout<<"\n\n";
-
     }
 }
 
@@ -209,6 +231,7 @@ void print(Student *ptr[], int num){
  */
 bool menu(Student *lastN[], Student *firstN[], Student *ssn[]){
     int menuNum;
+    //runs as long as there is not a valid menu input, such as >=8 or <=0
     do{
         cout<<"1. Print data in ascending order by last name\n"<<
             "2. Print data in ascending order by SSN\n"<<
@@ -224,7 +247,7 @@ bool menu(Student *lastN[], Student *firstN[], Student *ssn[]){
         }
 
     }while(!validMenuInput(menuNum));
-        
+    //Calls function based on menu input    
     switch (menuNum)
     {
     case 1:
@@ -249,6 +272,7 @@ bool menu(Student *lastN[], Student *firstN[], Student *ssn[]){
         break;
     case 6:
         searchFN(firstN);
+        return true;
         break;
     case 7:
         return false;
@@ -282,7 +306,7 @@ bool validMenuInput(int num){
  * @param ptr pointer that is full of the Student struct data
  */
 void ascLastName(Student *ptr[]){
-    sortLN(ptr);
+    sortLN(ptr, 1);//Tells it to sort the lowercase name into correct position based on alphabetical order
     print(ptr, -1);
 }
 
@@ -302,7 +326,7 @@ void ascSSN(Student *ptr[]){
  * @param ptr pointer that is full of the Student struct data
  */
 void ascFirstName(Student *ptr[]){
-    sortLN(ptr);
+    sortFN(ptr);
     print(ptr, -1);
 }
 
@@ -313,15 +337,16 @@ void ascFirstName(Student *ptr[]){
  * @param ptr Pointer that is full of Student struct data
  */
 void searchLN(Student *ptr[]){
-    sortLN(ptr);
+    sortLN(ptr, -1);//Tells it not to change lowercase to uppercase so that binary search works correctly
     int position = -1; // Position of search value
     bool found = false; // Flag
+    cin.ignore();
     while(!found){
-        string lastName;
+        string lastName = " ";
         cout<<"Please enter the Last Name of the person you are looking for: ";
+        
         getline(cin, lastName);
-        cin.ignore();
-
+        
         int first = 0, // First array element
         last = SIZE - 1, // Last array element
         middle; // Midpoint of search
@@ -398,8 +423,8 @@ void searchFN(Student *ptr[]){
     while(!found){
         string firstName;
         cout<<"Please enter the First Name of the person you are looking for: ";
-        getline(cin, firstName);
         cin.ignore();
+        getline(cin, firstName);
 
         int first = 0, // First array element
         last = SIZE - 1, // Last array element

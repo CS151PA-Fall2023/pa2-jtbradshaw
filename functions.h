@@ -15,6 +15,8 @@
 #include <vector>
 #include <string>
 #include <iomanip>
+#include <ctype.h>
+
 
 using namespace std;
 
@@ -39,7 +41,7 @@ bool menu(Student *lastN[],  Student *firstN[], Student *ssn[]);
 bool validMenuInput(int num);
 void loadPtr(Student vect[], Student **ptr);
 
-void sortLN(Student *ptr[]);
+void sortLN(Student *ptr[], int num);
 void sortSSN(Student *ptr[]);
 void sortFN(Student *ptr[]);
 
